@@ -41,6 +41,27 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>clear-old-jacoco-data</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <delete file="${project.build.directory}/jacoco.exec"/>
+                                <delete dir="${project.build.directory}/site/jacoco"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.12</version>
@@ -50,6 +71,9 @@
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
+                        <configuration>
+                            <append>false</append>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>report</id>
@@ -63,57 +87,50 @@
                             </excludes>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>check</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>INSTRUCTION</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>80.00</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                            <excludes>
+                                <exclude>com/example/demo/DemoApplication*</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
             <plugin>
-                <groupId>org.codehaus.gmavenplus</groupId>
-                <artifactId>gmavenplus-plugin</artifactId>
-                <version>4.1.1</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.groovy</groupId>
-                        <artifactId>groovy-xml</artifactId>
-                        <version>4.0.24</version>
-                    </dependency>
-                </dependencies>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
                 <executions>
                     <execution>
-                        <id>enforce-coverage-threshold</id>
+                        <id>print-coverage-summary</id>
                         <phase>test</phase>
                         <goals>
-                            <goal>execute</goal>
+                            <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <scripts>
-                                <script><![CDATA[
-import groovy.xml.XmlSlurper
-
-def reportFile = new File(project.build.directory, 'site/jacoco/jacoco.xml')
-if (!reportFile.exists()) {
-    throw new RuntimeException('Coverage report was not generated. Run mvn test again after fixing the JaCoCo setup.')
-}
-
-def report = new XmlSlurper().parse(reportFile)
-def instructionCounter = report.counter.find { it.@type.text() == 'INSTRUCTION' }
-if (instructionCounter == null) {
-    throw new RuntimeException('Coverage data is missing from jacoco.xml.')
-}
-
-def missed = instructionCounter.@missed.toBigDecimal()
-def covered = instructionCounter.@covered.toBigDecimal()
-def total = missed + covered
-if (total == 0) {
-    throw new RuntimeException("Don't forget it's mandatory to maintain 80% code coverage")
-}
-
-def ratio = covered / total
-log.info(String.format('Instruction coverage: %.2f%%', ratio * 100))
-if (ratio < 0.80) {
-    throw new RuntimeException("Don't forget it's mandatory to maintain 80% code coverage")
-}
-                                ]]></script>
-                            </scripts>
+                            <executable>python3</executable>
+                            <arguments>
+                                <argument>${project.basedir}/scripts/print_jacoco_coverage.py</argument>
+                                <argument>${project.build.directory}/site/jacoco/jacoco.xml</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>

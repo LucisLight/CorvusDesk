@@ -41,4 +41,9 @@ public class TicketService {
         return ticketRepository.findById(ticketId)
             .orElse(null);
     }
+
+    public void deleteTicket(String ticketId) {
+
+        ticketRepository.deleteById(ticketId);
+    }
 }

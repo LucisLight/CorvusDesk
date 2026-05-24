@@ -6,14 +6,21 @@ import TicketDetailPage from "./pages/TicketDetailPage";
 import AddOwnerPage from "./pages/AddOwnerPage";
 import ViewOwnersPage from "./pages/ViewOwnersPage";
 import LoginPage from "./pages/LoginPage";
+import EditOwnerPage from "./pages/EditOwnerPage";
 
 function App() {
 
   const [tickets, setTickets] = useState([]);
+
   const [selectedTicket, setSelectedTicket] = useState(null);
 
-  const [currentPage, setCurrentPage] = useState("tickets");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [selectedOwner, setSelectedOwner] = useState(null);
+
+  const [currentPage, setCurrentPage] =
+    useState("tickets");
+
+  const [isLoggedIn, setIsLoggedIn] =
+    useState(false);
 
   useEffect(() => {
 
@@ -23,7 +30,9 @@ function App() {
 
   const fetchTickets = async () => {
 
-    const response = await fetch("http://localhost:8080/tickets");
+    const response = await fetch(
+      "http://localhost:8080/tickets"
+    );
 
     const data = await response.json();
 
@@ -33,7 +42,9 @@ function App() {
   if (!isLoggedIn) {
 
     return (
-      <LoginPage setIsLoggedIn={setIsLoggedIn} />
+      <LoginPage
+        setIsLoggedIn={setIsLoggedIn}
+      />
     );
   }
 
@@ -56,7 +67,8 @@ function App() {
           padding: "16px 30px",
           borderRadius: "14px",
           marginBottom: "30px",
-          boxShadow: "0 2px 10px rgba(0,0,0,0.05)"
+          boxShadow:
+            "0 2px 10px rgba(0,0,0,0.05)"
         }}
       >
 
@@ -99,7 +111,6 @@ function App() {
                 currentPage === "tickets"
                   ? "#f7d7e6"
                   : "white",
-
               border: "1px solid #d94f8a",
               cursor: "pointer",
               borderRadius: "10px"
@@ -122,7 +133,6 @@ function App() {
                 currentPage === "create"
                   ? "#f7d7e6"
                   : "white",
-
               border: "1px solid #d94f8a",
               cursor: "pointer",
               borderRadius: "10px"
@@ -145,7 +155,6 @@ function App() {
                 currentPage === "owners"
                   ? "#f7d7e6"
                   : "white",
-
               border: "1px solid #d94f8a",
               cursor: "pointer",
               borderRadius: "10px"
@@ -171,6 +180,14 @@ function App() {
 
         <ViewOwnersPage
           setCurrentPage={setCurrentPage}
+          setSelectedOwner={setSelectedOwner}
+        />
+
+      ) : currentPage === "editOwner" ? (
+
+        <EditOwnerPage
+          selectedOwner={selectedOwner}
+          setCurrentPage={setCurrentPage}
         />
 
       ) : currentPage === "addOwner" ? (
@@ -191,6 +208,7 @@ function App() {
         <TicketListPage
           tickets={tickets}
           setSelectedTicket={setSelectedTicket}
+          fetchTickets={fetchTickets}
         />
 
       )}

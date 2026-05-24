@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 
 function CreateTicketPage({ fetchTickets, setCurrentPage }) {
 
+  const [successMessage, setSuccessMessage] = useState("");
+
   const [errorMessage, setErrorMessage] = useState("");
 
   const [owners, setOwners] = useState([]);
@@ -64,6 +66,8 @@ function CreateTicketPage({ fetchTickets, setCurrentPage }) {
 
     setErrorMessage("");
 
+    setSuccessMessage("Ticket created successfully!");
+
     fetchTickets();
 
     setFormData({
@@ -112,6 +116,24 @@ function CreateTicketPage({ fetchTickets, setCurrentPage }) {
         </p>
 
       )}
+
+      {successMessage && (
+
+        <div
+          style={{
+            backgroundColor: "#d9ffd9",
+            border: "1px solid green",
+            padding: "12px",
+            borderRadius: "10px",
+            marginBottom: "20px",
+            color: "#206020",
+            fontWeight: "bold"
+        }}
+        >
+        ✓  {successMessage}
+        </div>
+
+  )}
 
       <form onSubmit={handleSubmit}>
 

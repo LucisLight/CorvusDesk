@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,6 +41,11 @@ public class OwnerController {
     @DeleteMapping("/{ownerId}")
     public void deleteOwner(@PathVariable String ownerId) {
         ownerService.deleteOwner(ownerId);
+    }
+
+    @PutMapping("/{ownerId}")
+    public Owner updateOwner(@PathVariable String ownerId, @RequestBody Owner updatedOwner) {
+        return ownerService.updateOwner(ownerId, updatedOwner);
     }
 
 }

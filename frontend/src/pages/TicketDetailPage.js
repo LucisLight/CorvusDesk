@@ -1,11 +1,48 @@
+import { useEffect, useState } from "react";
+
 function TicketDetailPage({
   selectedTicket,
   setSelectedTicket,
   fetchTickets,
   setCurrentPage
 }) {
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const [owners, setOwners] = useState([]);
+
+  const [editedTicket, setEditedTicket] = useState({
+    ...selectedTicket
+  });
+
+  useEffect(() => {
+
+    fetchOwners();
+
+  }, []);
+
+  const fetchOwners = async () => {
+
+    const response = await fetch("http://localhost:8080/owners");
+
+    const data = await response.json();
+
+    setOwners(data);
+  };
 
   const deleteTicket = async (ticketId) => {
+
+    if (
+      selectedTicket.status !== "Closed" &&
+      selectedTicket.status !== "Resolved"
+    ) {
+      const confirmDelete = window.confirm(
+        "This ticket is not closed or resolved. Are you sure you want to delete it?"
+      );
+
+      if (!confirmDelete) {
+        return;
+      }
+    }
 
     await fetch(`http://localhost:8080/tickets/${ticketId}`, {
       method: "DELETE"
@@ -16,19 +53,44 @@ function TicketDetailPage({
     setSelectedTicket(null);
   };
 
+  const saveChanges = async () => {
+    setSuccessMessage("");
+
+    await fetch(
+      `http://localhost:8080/tickets/${selectedTicket.ticketId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(editedTicket)
+      }
+    );
+
+    fetchTickets();
+
+    setSelectedTicket(editedTicket);
+
+    setSuccessMessage("Changes saved successfully!");
+  };
+
   return (
 
-    <div style={{
-      padding: "30px",
-      backgroundColor: "#fff5fa",
-      minHeight: "100vh"
-    }}>
+    <div
+      style={{
+        padding: "30px",
+        backgroundColor: "#fff5fa",
+        minHeight: "100vh"
+      }}
+    >
 
-      <div style={{
-        display: "flex",
-        gap: "10px",
-        marginBottom: "20px"
-      }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "10px",
+          marginBottom: "20px"
+        }}
+      >
 
         <button
           onClick={() => {
@@ -59,73 +121,174 @@ function TicketDetailPage({
           Delete
         </button>
 
+        <button
+          onClick={saveChanges}
+          style={{
+            backgroundColor: "#d94f8a",
+            color: "white",
+            border: "none",
+            padding: "8px 16px",
+            cursor: "pointer"
+          }}
+        >
+          Save Changes
+        </button>
+
+        {successMessage && (
+
+          <div
+            style={{
+              backgroundColor: "#d9ffd9",
+              border: "1px solid green",
+              padding: "12px",
+              borderRadius: "10px",
+              marginBottom: "20px",
+              color: "#206020",
+              fontWeight: "bold"
+            }}
+          >
+            ✓  {successMessage}
+          </div>
+
+        )}
+
       </div>
 
-      <h1 style={{
-        color: "#d94f8a",
-        marginBottom: "25px"
-      }}>
-        {selectedTicket.title}
+      <h1
+        style={{
+          color: "#d94f8a",
+          marginBottom: "25px"
+        }}
+      >
+        {editedTicket.title}
       </h1>
 
-      <div style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "20px"
-      }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "20px"
+        }}
+      >
 
         {/* Ticket Information */}
 
-        <div style={{
-          backgroundColor: "white",
-          border: "1px solid lightpink",
-          borderRadius: "12px",
-          padding: "20px"
-        }}>
+        <div
+          style={{
+            backgroundColor: "white",
+            border: "1px solid lightpink",
+            borderRadius: "12px",
+            padding: "20px"
+          }}
+        >
 
-          <h2 style={{
-            marginTop: 0,
-            color: "#d94f8a"
-          }}>
+          <h2
+            style={{
+              marginTop: 0,
+              color: "#d94f8a"
+            }}
+          >
             Ticket Information
           </h2>
 
           <p>
             <strong>Request ID:</strong>
             {" "}
-            {selectedTicket.ticketId.substring(0, 8)}
+            {editedTicket.ticketId.substring(0, 8)}
           </p>
 
           <p>
             <strong>Status:</strong>
             {" "}
-            {selectedTicket.status}
+
+            <select
+              value={editedTicket.status || ""}
+              onChange={(event) => {
+
+                setEditedTicket({
+                  ...editedTicket,
+                  status: event.target.value
+                });
+
+              }}
+            >
+
+              <option value="Open">
+                Open
+              </option>
+
+              <option value="In Progress">
+                In Progress
+              </option>
+              
+              <option value="Resolved">
+                Resolved
+              </option>
+
+              <option value="Closed">
+                Closed
+              </option>
+
+            </select>
+
           </p>
 
           <p>
             <strong>Priority:</strong>
             {" "}
-            {selectedTicket.priority || "N/A"}
+
+            <select
+              value={editedTicket.priority || ""}
+              onChange={(event) => {
+
+                setEditedTicket({
+                  ...editedTicket,
+                  priority: event.target.value
+                });
+
+              }}
+            >
+
+              <option value="Low">
+                Low
+              </option>
+
+              <option value="Medium">
+                Medium
+              </option>
+
+              <option value="High">
+                High
+              </option>
+
+              <option value="Critical">
+                Critical
+              </option>
+
+            </select>
+
           </p>
 
           <p>
             <strong>Category:</strong>
             {" "}
-            {selectedTicket.category || "N/A"}
+            {editedTicket.category || "N/A"}
           </p>
 
           <p>
             <strong>Created:</strong>
             {" "}
-            {new Date(selectedTicket.createdAt).toLocaleString()}
+            {new Date(editedTicket.createdAt).toLocaleString()}
           </p>
 
           <p>
             <strong>Last Updated:</strong>
             {" "}
-            {selectedTicket.updatedAt
-              ? new Date(selectedTicket.updatedAt).toLocaleString()
+
+            {editedTicket.updatedAt
+              ? new Date(editedTicket.updatedAt).toLocaleString()
               : "N/A"}
+
           </p>
 
           <hr />
@@ -133,79 +296,124 @@ function TicketDetailPage({
           <h3>Description</h3>
 
           <p>
-            {selectedTicket.description}
+            {editedTicket.description}
           </p>
 
         </div>
 
         {/* Requester Information */}
 
-        <div style={{
-          backgroundColor: "white",
-          border: "1px solid lightpink",
-          borderRadius: "12px",
-          padding: "20px"
-        }}>
+        <div
+          style={{
+            backgroundColor: "white",
+            border: "1px solid lightpink",
+            borderRadius: "12px",
+            padding: "20px"
+          }}
+        >
 
-          <h2 style={{
-            marginTop: 0,
-            color: "#d94f8a"
-          }}>
+          <h2
+            style={{
+              marginTop: 0,
+              color: "#d94f8a"
+            }}
+          >
             Requester Information
           </h2>
 
           <p>
             <strong>Name:</strong>
             {" "}
-            {selectedTicket.requesterName || "N/A"}
+            {editedTicket.requesterName || "N/A"}
           </p>
 
           <p>
             <strong>Email:</strong>
             {" "}
-            {selectedTicket.requesterEmail || "N/A"}
+            {editedTicket.requesterEmail || "N/A"}
           </p>
 
           <p>
             <strong>Phone:</strong>
             {" "}
-            {selectedTicket.requesterPhone || "N/A"}
+            {editedTicket.requesterPhone || "N/A"}
           </p>
 
         </div>
 
         {/* Owner Information */}
 
-        <div style={{
-          backgroundColor: "white",
-          border: "1px solid lightpink",
-          borderRadius: "12px",
-          padding: "20px"
-        }}>
+        <div
+          style={{
+            backgroundColor: "white",
+            border: "1px solid lightpink",
+            borderRadius: "12px",
+            padding: "20px"
+          }}
+        >
 
-          <h2 style={{
-            marginTop: 0,
-            color: "#d94f8a"
-          }}>
+          <h2
+            style={{
+              marginTop: 0,
+              color: "#d94f8a"
+            }}
+          >
             Owner Information
           </h2>
 
           <p>
-            <strong>Name:</strong>
+            <strong>Assigned Owner:</strong>
             {" "}
-            {selectedTicket.ownerName || "Unassigned"}
+
+            <select
+              value={editedTicket.ownerId || ""}
+              onChange={(event) => {
+
+                const selectedOwner = owners.find(
+                  (owner) => owner.ownerId === event.target.value
+                );
+
+                if (!selectedOwner) {
+
+                  return;
+                }
+
+                setEditedTicket({
+                  ...editedTicket,
+                  ownerId: selectedOwner.ownerId,
+                  ownerName: selectedOwner.name,
+                  ownerEmail: selectedOwner.email,
+                  ownerPhone: selectedOwner.phone
+                });
+
+              }}
+            >
+
+              {owners.map((owner) => (
+
+                <option
+                  key={owner.ownerId}
+                  value={owner.ownerId}
+                >
+                  {owner.name}
+                </option>
+
+              ))}
+
+            </select>
+
           </p>
 
           <p>
             <strong>Email:</strong>
             {" "}
-            {selectedTicket.ownerEmail || "N/A"}
+            {editedTicket.ownerEmail || "N/A"}
           </p>
 
           <p>
             <strong>Phone:</strong>
             {" "}
-            {selectedTicket.ownerPhone || "N/A"}
+            {editedTicket.ownerPhone || "N/A"}
           </p>
 
         </div>

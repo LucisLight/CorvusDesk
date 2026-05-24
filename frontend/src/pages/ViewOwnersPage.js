@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 
 function ViewOwnersPage({
-  setCurrentPage
+  setCurrentPage,
+  setSelectedOwner
 }) {
 
   const [owners, setOwners] = useState([]);
@@ -14,7 +15,9 @@ function ViewOwnersPage({
 
   const fetchOwners = async () => {
 
-    const response = await fetch("http://localhost:8080/owners");
+    const response = await fetch(
+      "http://localhost:8080/owners"
+    );
 
     const data = await response.json();
 
@@ -23,29 +26,38 @@ function ViewOwnersPage({
 
   const deleteOwner = async (ownerId) => {
 
-    await fetch(`http://localhost:8080/owners/${ownerId}`, {
-      method: "DELETE"
-    });
+    await fetch(
+      `http://localhost:8080/owners/${ownerId}`,
+      {
+        method: "DELETE"
+      }
+    );
 
     fetchOwners();
   };
 
   return (
 
-    <div style={{
-      padding: "30px"
-    }}>
+    <div
+      style={{
+        padding: "30px"
+      }}
+    >
 
-      <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: "20px"
-      }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px"
+        }}
+      >
 
-        <h1 style={{
-          color: "#d94f8a"
-        }}>
+        <h1
+          style={{
+            color: "#d94f8a"
+          }}
+        >
           Owners
         </h1>
 
@@ -55,7 +67,8 @@ function ViewOwnersPage({
             backgroundColor: "#f7d7e6",
             border: "1px solid #d94f8a",
             padding: "10px 16px",
-            cursor: "pointer"
+            cursor: "pointer",
+            borderRadius: "8px"
           }}
         >
           + Add Owner
@@ -63,14 +76,17 @@ function ViewOwnersPage({
 
       </div>
 
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "220px 260px 180px 120px",
-        fontWeight: "bold",
-        borderBottom: "2px solid lightpink",
-        paddingBottom: "10px",
-        marginBottom: "10px"
-      }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "220px 260px 180px 220px",
+          fontWeight: "bold",
+          borderBottom: "2px solid lightpink",
+          paddingBottom: "10px",
+          marginBottom: "10px"
+        }}
+      >
 
         <div>Name</div>
 
@@ -78,7 +94,7 @@ function ViewOwnersPage({
 
         <div>Phone</div>
 
-        <div>Action</div>
+        <div>Actions</div>
 
       </div>
 
@@ -88,7 +104,8 @@ function ViewOwnersPage({
           key={owner.ownerId}
           style={{
             display: "grid",
-            gridTemplateColumns: "220px 260px 180px 120px",
+            gridTemplateColumns:
+              "220px 260px 180px 220px",
             alignItems: "center",
             padding: "12px 0",
             borderBottom: "1px solid #eee"
@@ -107,16 +124,43 @@ function ViewOwnersPage({
             {owner.phone || "N/A"}
           </div>
 
-          <div>
+          <div
+            style={{
+              display: "flex",
+              gap: "10px"
+            }}
+          >
 
             <button
-              onClick={() => deleteOwner(owner.ownerId)}
+              onClick={() => {
+
+                setSelectedOwner(owner);
+
+                setCurrentPage("editOwner");
+
+              }}
+              style={{
+                backgroundColor: "#f7d7e6",
+                border: "1px solid #d94f8a",
+                padding: "6px 12px",
+                cursor: "pointer",
+                borderRadius: "8px"
+              }}
+            >
+              Edit
+            </button>
+
+            <button
+              onClick={() =>
+                deleteOwner(owner.ownerId)
+              }
               style={{
                 backgroundColor: "red",
                 color: "white",
                 border: "none",
                 padding: "8px 12px",
-                cursor: "pointer"
+                cursor: "pointer",
+                borderRadius: "8px"
               }}
             >
               Delete

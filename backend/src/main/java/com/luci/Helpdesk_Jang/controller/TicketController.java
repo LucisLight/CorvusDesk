@@ -3,6 +3,7 @@ package com.luci.Helpdesk_Jang.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.luci.Helpdesk_Jang.model.Ticket;
 import com.luci.Helpdesk_Jang.service.TicketService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/tickets")
@@ -25,7 +28,7 @@ public class TicketController {
     }
 
     @PostMapping("/create")
-    public Ticket createTicket(@RequestBody Ticket ticket) {
+    public Ticket createTicket(@Valid @RequestBody Ticket ticket) {
         return ticketService.createTicket(ticket);
     }
 
@@ -38,5 +41,10 @@ public class TicketController {
     @GetMapping("/{ticketId}")
     public Ticket getTicketById(@PathVariable String ticketId) {
         return ticketService.getTicketById(ticketId);
+    }
+
+    @DeleteMapping("/{ticketId}")
+    public void deleteTicket(@PathVariable String ticketId) {
+        ticketService.deleteTicket(ticketId);
     }
 }

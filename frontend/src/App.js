@@ -1,190 +1,199 @@
 import { useEffect, useState } from "react";
 
+import CreateTicketPage from "./pages/CreateTicketPage";
+import TicketListPage from "./pages/TicketListPage";
+import TicketDetailPage from "./pages/TicketDetailPage";
+import AddOwnerPage from "./pages/AddOwnerPage";
+import ViewOwnersPage from "./pages/ViewOwnersPage";
+import LoginPage from "./pages/LoginPage";
+
 function App() {
 
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
 
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    requesterName: ""
-  });
+  const [currentPage, setCurrentPage] = useState("tickets");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
+
     fetchTickets();
+
   }, []);
 
   const fetchTickets = async () => {
+
     const response = await fetch("http://localhost:8080/tickets");
+
     const data = await response.json();
 
     setTickets(data);
   };
 
-  const handleChange = (event) => {
+  if (!isLoggedIn) {
 
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value
-    });
-  };
-
-  const handleSubmit = async (event) => {
-
-    event.preventDefault();
-
-    await fetch("http://localhost:8080/tickets/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(formData)
-    });
-
-    fetchTickets();
-
-    setFormData({
-      title: "",
-      description: "",
-      requesterName: ""
-    });
-  };
+    return (
+      <LoginPage setIsLoggedIn={setIsLoggedIn} />
+    );
+  }
 
   return (
-    <div style={{ padding: "20px" }}>
 
-      <h1>HelpDesk Request System</h1>
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "#fff5fa",
+        padding: "20px"
+      }}
+    >
 
-      <form onSubmit={handleSubmit}>
-
-        <input
-          type="text"
-          name="title"
-          placeholder="Title"
-          value={formData.title}
-          onChange={handleChange}
-        />
-
-        <br /><br />
-
-        <textarea
-          name="description"
-          placeholder="Description"
-          value={formData.description}
-          onChange={handleChange}
-        />
-
-        <br /><br />
-
-        <input
-          type="text"
-          name="requesterName"
-          placeholder="Requester Name"
-          value={formData.requesterName}
-          onChange={handleChange}
-        />
-
-        <br /><br />
-
-        <button type="submit">
-          Create Ticket
-        </button>
-
-      </form>
-
-      <hr />
-
-      <h2>All Tickets</h2>
-
-    {selectedTicket ? (
-
-     <div
+      <div
         style={{
-          border: "2px solid hotpink",
-          padding: "20px"
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          backgroundColor: "white",
+          padding: "16px 30px",
+          borderRadius: "14px",
+          marginBottom: "30px",
+          boxShadow: "0 2px 10px rgba(0,0,0,0.05)"
         }}
       >
 
-        <button
-          onClick={() => setSelectedTicket(null)}
+        <div
           style={{
-            marginBottom: "15px"
+            display: "flex",
+            alignItems: "center",
+            gap: "15px"
           }}
         >
-          Back
-        </button>
 
-        <h2>{selectedTicket.title}</h2>
+          <img
+            src="/small-corvus.png"
+            alt="CorvusDesk"
+            style={{
+              height: "60px"
+            }}
+          />
 
-        <p>
-          <strong>Description:</strong>
-          {" "}
-          {selectedTicket.description}
-        </p>
+        </div>
 
-        <p>
-          <strong>Requester:</strong>
-          {" "}
-          {selectedTicket.requesterName}
-        </p>
+        <div
+          style={{
+            display: "flex",
+            gap: "15px"
+          }}
+        >
 
-       <p>
-          <strong>Status:</strong>
-          {" "}
-          {selectedTicket.status}
-        </p>
+          <button
+            onClick={() => {
 
-        <p>
-          <strong>Request ID:</strong>
-          {" "}
-          {selectedTicket.ticketId.substring(0, 8)}
-        </p>
+              setSelectedTicket(null);
 
-        <p>
-          <strong>Created:</strong>
-          {" "}
-          {new Date(selectedTicket.createdAt).toLocaleString()}
-        </p>
+              setCurrentPage("tickets");
+
+            }}
+            style={{
+              padding: "10px 18px",
+              backgroundColor:
+                currentPage === "tickets"
+                  ? "#f7d7e6"
+                  : "white",
+
+              border: "1px solid #d94f8a",
+              cursor: "pointer",
+              borderRadius: "10px"
+            }}
+          >
+            All Tickets
+          </button>
+
+          <button
+            onClick={() => {
+
+              setSelectedTicket(null);
+
+              setCurrentPage("create");
+
+            }}
+            style={{
+              padding: "10px 18px",
+              backgroundColor:
+                currentPage === "create"
+                  ? "#f7d7e6"
+                  : "white",
+
+              border: "1px solid #d94f8a",
+              cursor: "pointer",
+              borderRadius: "10px"
+            }}
+          >
+            Create Ticket
+          </button>
+
+          <button
+            onClick={() => {
+
+              setSelectedTicket(null);
+
+              setCurrentPage("owners");
+
+            }}
+            style={{
+              padding: "10px 18px",
+              backgroundColor:
+                currentPage === "owners"
+                  ? "#f7d7e6"
+                  : "white",
+
+              border: "1px solid #d94f8a",
+              cursor: "pointer",
+              borderRadius: "10px"
+            }}
+          >
+            Owners
+          </button>
+
+        </div>
 
       </div>
 
-    ) : (
+      {selectedTicket ? (
 
-      tickets.map((ticket) => (
+        <TicketDetailPage
+          selectedTicket={selectedTicket}
+          setSelectedTicket={setSelectedTicket}
+          fetchTickets={fetchTickets}
+          setCurrentPage={setCurrentPage}
+        />
 
-        <div
-          key={ticket.ticketId}
-          onClick={() => setSelectedTicket(ticket)}
-             style={{
-               border: "1px solid black",
-               padding: "10px",
-               marginBottom: "10px",
-               cursor: "pointer"
-             }}>
+      ) : currentPage === "owners" ? (
 
-          <h3>{ticket.title}</h3>
+        <ViewOwnersPage
+          setCurrentPage={setCurrentPage}
+        />
 
-          <p>{ticket.description}</p>
+      ) : currentPage === "addOwner" ? (
 
-          <p>
-            <strong>Requester:</strong> {ticket.requesterName}
-          </p>
+        <AddOwnerPage
+          setCurrentPage={setCurrentPage}
+        />
 
-          <p>
-            <strong>Request ID:</strong> {ticket.ticketId.substring(0, 8)}
-          </p>
+      ) : currentPage === "create" ? (
 
-          <p>
-            <strong>Created:</strong> {ticket.createdAt}
-          </p>
+        <CreateTicketPage
+          fetchTickets={fetchTickets}
+          setCurrentPage={setCurrentPage}
+        />
 
-          <p>
-            <strong>Status:</strong> {ticket.status}
-          </p>
+      ) : (
 
-        </div>
-      )))}
+        <TicketListPage
+          tickets={tickets}
+          setSelectedTicket={setSelectedTicket}
+        />
+
+      )}
 
     </div>
   );

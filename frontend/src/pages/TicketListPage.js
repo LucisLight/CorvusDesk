@@ -1,8 +1,19 @@
+import { useState } from "react";
+
 function TicketListPage({
   tickets,
   setSelectedTicket,
   fetchTickets
 }) {
+
+  const [statusFilter, setStatusFilter] =
+    useState("");
+
+  const [priorityFilter, setPriorityFilter] =
+    useState("");
+
+  const [searchText, setSearchText] =
+    useState("");
 
   const updateTicket = async (updatedTicket) => {
 
@@ -17,6 +28,45 @@ function TicketListPage({
       }
     );
   };
+
+const filteredTickets = tickets.filter((ticket) => {
+
+  const matchesStatus =
+    !statusFilter ||
+    ticket.status === statusFilter;
+
+  const matchesPriority =
+    !priorityFilter ||
+    ticket.priority === priorityFilter;
+
+  const matchesSearch =
+    !searchText ||
+
+    ticket.title
+      ?.toLowerCase()
+      .includes(
+        searchText.toLowerCase()
+      ) ||
+
+    ticket.description
+      ?.toLowerCase()
+      .includes(
+        searchText.toLowerCase()
+      ) ||
+
+    ticket.requesterName
+      ?.toLowerCase()
+      .includes(
+        searchText.toLowerCase()
+      );
+
+  return (
+    matchesStatus &&
+    matchesPriority &&
+    matchesSearch
+  );
+
+});
 
   return (
 
@@ -44,6 +94,92 @@ function TicketListPage({
         >
           All Tickets
         </h1>
+
+        <div
+          style={{
+            display: "flex",
+            gap: "12px",
+            marginBottom: "20px",
+            flexWrap: "wrap"
+          }}
+        >
+
+          <select
+            value={statusFilter}
+            onChange={(event) =>
+              setStatusFilter(event.target.value)
+            }
+            style={{
+              padding: "8px"
+            }}
+          >
+            <option value="">
+              All Statuses
+            </option>
+
+            <option value="Open">
+              Open
+            </option>
+
+            <option value="In Progress">
+              In Progress
+            </option>
+
+            <option value="Resolved">
+              Resolved
+            </option>
+
+            <option value="Closed">
+              Closed
+            </option>
+
+          </select>
+
+          <select
+            value={priorityFilter}
+            onChange={(event) =>
+              setPriorityFilter(event.target.value)
+            }
+            style={{
+              padding: "8px"
+            }}
+          >
+            <option value="">
+              All Priorities
+            </option>
+
+            <option value="Low">
+              Low
+            </option>
+
+            <option value="Medium">
+              Medium
+            </option>
+
+            <option value="High">
+              High
+            </option>
+
+            <option value="Critical">
+              Critical
+            </option>
+
+          </select>
+
+          <input
+            type="text"
+            placeholder="Search title, description, or requester"
+            value={searchText}
+            onChange={(event) =>
+              setSearchText(event.target.value)
+            }
+            style={{
+              padding: "8px",
+              width: "300px"
+            }}
+          />
+
+        </div>
 
         <div
           style={{
@@ -76,8 +212,23 @@ function TicketListPage({
           <div>Action</div>
 
         </div>
+        
+        {filteredTickets.length === 0 && (
 
-        {tickets.map((ticket) => (
+          <div
+            style={{
+              padding: "20px",
+              textAlign: "center",
+              color: "#666",
+              fontWeight: "bold"
+            }}
+          >
+            No tickets found.
+          </div>
+
+        )}
+
+        {filteredTickets.map((ticket) => (
 
           <div
             key={ticket.ticketId}

@@ -2,6 +2,7 @@ import { useState } from "react";
 
 function EditOwnerPage({
   selectedOwner,
+  setSelectedOwner,
   setCurrentPage
 }) {
 
@@ -43,9 +44,11 @@ function EditOwnerPage({
 
     setTimeout(() => {
 
+      setSelectedOwner(null);
+
       setCurrentPage("owners");
 
-    }, 1200);
+    }, 2400);
   };
 
   return (

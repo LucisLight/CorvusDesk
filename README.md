@@ -1,375 +1,271 @@
-# CS 351 Semester Project Template
+# CorvusDesk
 
-This repository is the starter template for the CS 351 semester project.
+CorvusDesk is a full-stack help desk and ticket management application built using React, Spring Boot, and MongoDB Atlas. The application allows users to create, manage, update, and track support tickets through a responsive multi-page interface with integrated owner management, workflow validation, and status tracking.
 
-## Structure
-
-- `frontend/` - React frontend (npm + Vite)
-- `backend/` - Java backend (Spring Boot + Maven)
-
-## What the starter does
-
-- The backend exposes `GET /api/messages`
-- The backend returns a JSON array:
-  - `hello world1`
-  - `hello world2`
-- The frontend calls that API and displays the results in a table
-
-## Prerequisites
-
-You need all of the following installed before you can run the starter project:
-
-- **Node.js + npm** for the frontend
-- **Java 17 JDK** for the backend
-- **Apache Maven** for the backend build and run commands
-
-Verify your tools after installation:
-
-```bash
-node -v
-npm -v
-java -version
-mvn -version
-```
-
-If all four commands work, your machine is ready to run the project.
+The project was designed to simulate a realistic internal help desk platform while following layered architecture principles and full-stack development practices.
 
 ---
 
-## Install prerequisites on macOS
+# Technologies Used
 
-### 1) Install Node.js and npm
+## Frontend
+- React
+- JavaScript
+- HTML/CSS
+- Responsive CSS Grid Layouts
 
-**Recommended option:**
+## Backend
+- Java
+- Spring Boot
+- REST APIs
+- Maven
 
-- Go to the official Node.js download page: https://nodejs.org/en/download
-- Download the current **LTS** macOS installer (`.pkg`)
-- Run the installer
+## Database
+- MongoDB Atlas
 
-After installation, open a new Terminal window and verify:
-
-```bash
-node -v
-npm -v
-```
-
-### 2) Install Java 17 JDK
-
-- Go to the Oracle JDK 17 download page
-- Download the macOS installer for your machine:
-  - **Apple Silicon (M1/M2/M3/ARM64):** macOS aarch64
-  - **Intel Mac:** macOS x64
-- Open the downloaded `.dmg`
-- Run the installer
-
-Verify:
-
-```bash
-java -version
-```
-
-### 3) Install Apache Maven
-
-#### Option A: Homebrew (easiest if you already use Homebrew)
-
-```bash
-brew install maven
-```
-
-Verify:
-
-```bash
-mvn -version
-```
-
-#### Option B: Manual install
-
-- Download the latest Apache Maven **binary tar.gz** archive
-- Extract it somewhere permanent, for example:
-  - `/Users/<your-user>/tools/apache-maven`
-- Add Maven's `bin` folder to your shell profile
-
-Example for `~/.zshrc`:
-
-```bash
-export MAVEN_HOME="$HOME/tools/apache-maven"
-export PATH="$MAVEN_HOME/bin:$PATH"
-```
-
-Reload your shell:
-
-```bash
-source ~/.zshrc
-```
-
-Verify:
-
-```bash
-mvn -version
-```
+## Testing
+- JUnit
+- Mockito
 
 ---
 
-## Install prerequisites on Windows
+# Core Features
 
-### 1) Install Node.js and npm
+## Ticket Management
+- Create tickets
+- View all tickets
+- View detailed ticket information
+- Edit ticket status
+- Edit ticket priority
+- Delete tickets
+- Assign owners to tickets
 
-- Go to the official Node.js download page: https://nodejs.org/en/download
-- Download the current **LTS** Windows installer (`.msi`)
-- Run the installer
+## Supported Statuses
+- Open
+- In Progress
+- Resolved
+- Closed
 
-Open a new Command Prompt or PowerShell window and verify:
+## Supported Priorities
+- Low
+- Medium
+- High
+- Critical
 
-```powershell
-node -v
-npm -v
-```
+---
 
-### 2) Install Java 17 JDK
+# Owner Management
+- Add owners
+- Edit owners
+- Delete owners
+- View all owners
+- Assign owners directly to tickets
 
-- Go to the Oracle JDK 17 download page
-- Download the Windows x64 installer (`.exe`) for JDK 17
-- Run the installer as needed
+---
 
-Open a new Command Prompt or PowerShell window and verify:
+# Validation and Workflow Features
+- Rejects invalid status values
+- Rejects invalid priority values
+- Handles updates on non-existent tickets
+- Prevents accidental deletion of unresolved tickets
+- Success messaging for create/update operations
+- Dropdown validation for ticket workflows
 
-```powershell
-java -version
-```
+---
 
-### 3) Install Apache Maven
+# UI Features
+- Full CorvusDesk branding integration
+- Multi-page frontend architecture
+- Responsive layouts
+- Dynamic ticket grids
+- Color-coded priority indicators
+- Color-coded status indicators
+- Login landing page
+- Modern dashboard layout
+- Responsive ticket table scaling
 
-#### Option A: Manual install (recommended on Windows)
+---
 
-1. Download the latest Apache Maven **binary zip** archive
-2. Extract it to a permanent folder, for example:
-   - `C:\tools\apache-maven`
-3. Add Maven's `bin` folder to your system `Path`
-   - Example: `C:\tools\apache-maven\bin`
-4. Optional: add a system variable named `MAVEN_HOME`
-   - Example: `C:\tools\apache-maven`
+# Project Structure
 
-After updating `Path`, open a **new** Command Prompt or PowerShell window and verify:
+## Backend Structure
 
-```powershell
-mvn -version
-```
-
-#### Option B: Winget (if your machine has winget configured)
-
-```powershell
-winget install Apache.Maven
-```
-
-Then verify:
-
-```powershell
-mvn -version
+```text
+backend/
+├── src/
+│   ├── main/
+│   │   ├── java/com/luci/Helpdesk_Jang/
+│   │   │   ├── controller/
+│   │   │   │   ├── OwnerController.java
+│   │   │   │   └── TicketController.java
+│   │   │   │
+│   │   │   ├── model/
+│   │   │   │   ├── Owner.java
+│   │   │   │   └── Ticket.java
+│   │   │   │
+│   │   │   ├── repository/
+│   │   │   │   ├── OwnerRepository.java
+│   │   │   │   └── TicketRepository.java
+│   │   │   │
+│   │   │   ├── service/
+│   │   │   │   ├── OwnerService.java
+│   │   │   │   └── TicketService.java
+│   │   │   │
+│   │   │   ├── ConfigCheck.java
+│   │   │   ├── MongoConfig.java
+│   │   │   └── HelpdeskJangApplication.java
+│   │   │
+│   │   └── resources/
+│   │       ├── static/
+│   │       ├── templates/
+│   │       └── application.properties
+│   │
+│   └── test/
+│       └── java/com/luci/Helpdesk_Jang/service/
+│           └── TicketServiceTest.java
+│
+├── pom.xml
+├── mvnw
+└── mvnw.cmd
 ```
 
 ---
 
-## Install prerequisites on Linux
+## Frontend Structure
 
-### 1) Install Node.js and npm
-
-#### Option A: Official Node.js binaries
-
-- Go to the official Node.js download page: https://nodejs.org/en/download
-- Download the current **LTS** Linux binary archive for your architecture
-- Extract it somewhere under your home directory or `/opt`
-- Add its `bin` folder to your `PATH`
-
-Example:
-
-```bash
-export PATH="$HOME/tools/node/bin:$PATH"
-```
-
-Then verify:
-
-```bash
-node -v
-npm -v
-```
-
-#### Option B: Package manager (common on Linux)
-
-Examples:
-
-```bash
-# Ubuntu / Debian
-sudo apt update
-sudo apt install -y nodejs npm
-
-# Fedora
-sudo dnf install -y nodejs npm
-```
-
-Then verify:
-
-```bash
-node -v
-npm -v
-```
-
-### 2) Install Java 17 JDK
-
-#### Option A: Official Oracle JDK packages or archive
-
-- Go to the Oracle JDK 17 download page
-- Download one of the Linux packages for your platform:
-  - `.deb` for Debian/Ubuntu-based systems
-  - `.rpm` for Fedora/RHEL-based systems
-  - `.tar.gz` if you want a manual install
-
-Then verify:
-
-```bash
-java -version
-```
-
-#### Option B: Package manager
-
-Examples:
-
-```bash
-# Ubuntu / Debian
-sudo apt update
-sudo apt install -y openjdk-17-jdk
-
-# Fedora
-sudo dnf install -y java-17-openjdk-devel
-```
-
-Then verify:
-
-```bash
-java -version
-```
-
-### 3) Install Apache Maven
-
-#### Option A: Package manager
-
-Examples:
-
-```bash
-# Ubuntu / Debian
-sudo apt update
-sudo apt install -y maven
-
-# Fedora
-sudo dnf install -y maven
-```
-
-Verify:
-
-```bash
-mvn -version
-```
-
-#### Option B: Manual install
-
-- Download the latest Apache Maven **binary tar.gz** archive
-- Extract it to a permanent folder, for example:
-  - `$HOME/tools/apache-maven`
-- Add its `bin` directory to your `PATH`
-
-Example:
-
-```bash
-export MAVEN_HOME="$HOME/tools/apache-maven"
-export PATH="$MAVEN_HOME/bin:$PATH"
-```
-
-Reload your shell:
-
-```bash
-source ~/.bashrc
-```
-
-Verify:
-
-```bash
-mvn -version
+```text
+frontend/
+├── public/
+│   ├── corvus-logo.png
+│   ├── small-corvus.png
+│   ├── favicon.ico
+│   └── index.html
+│
+├── src/
+│   ├── pages/
+│   │   ├── AddOwnerPage.js
+│   │   ├── CreateTicketPage.js
+│   │   ├── EditOwnerPage.js
+│   │   ├── LoginPage.js
+│   │   ├── TicketDetailPage.js
+│   │   ├── TicketListPage.js
+│   │   └── ViewOwnersPage.js
+│   │
+│   ├── App.js
+│   ├── App.css
+│   ├── index.js
+│   ├── index.css
+│   └── styles.css
+│
+├── package.json
+├── vite.config.js
+└── README.md
 ```
 
 ---
 
+# Running the Project
 
+## Frontend Setup
 
-## Run backend tests and coverage
-
-From the `backend/` directory:
-
-```bash
-mvn test
-```
-
-This command will:
-- run the backend unit tests
-- generate a JaCoCo coverage report
-- fail the build if overall instruction coverage is below 80%
-
-If coverage is too low, Maven will fail with this message:
-
-```
-Don't forget it's mandatory to maintain 80% code coverage
-```
-
-After a successful run, open the HTML coverage report here:
-
-- `backend/target/site/jacoco/index.html`
-
-
-## Run the backend
-
-```bash
-cd backend
-mvn spring-boot:run
-```
-
-Backend runs on:
-
-- `http://localhost:8080`
-
-## Run the frontend
-
-Open a second terminal:
+Navigate into the frontend directory:
 
 ```bash
 cd frontend
+```
+
+Install dependencies:
+
+```bash
 npm install
-npm run dev
+```
+
+Start the frontend:
+
+```bash
+npm start
 ```
 
 Frontend runs on:
 
-- `http://localhost:5173`
-
-The Vite dev server proxies `/api/*` to the backend.
-
----
-
-## Suggested student workflow
-
-1. Clone the repository
-2. Install Node.js, npm, Java 17, and Maven
-3. Verify the starter application works locally
-4. Create a feature branch
-5. Begin implementing project requirements incrementally
-6. Add unit tests as features are delivered
-7. Use pull requests for meaningful changes
-
----
-
-## Example API
-
-`GET /api/messages`
-
-Response:
-
-```json
-["hello world1", "hello world2"]
+```text
+http://localhost:3000
 ```
+
+---
+
+## Backend Setup
+
+Navigate into the backend directory:
+
+```bash
+cd backend
+```
+
+Run Spring Boot:
+
+```bash
+./mvnw spring-boot:run
+```
+
+Backend runs on:
+
+```text
+http://localhost:8080
+```
+
+---
+
+# MongoDB Configuration
+
+Create an `application.properties` file inside:
+
+```text
+backend/src/main/resources/
+```
+
+Add your MongoDB Atlas connection string:
+
+```properties
+spring.data.mongodb.uri=YOUR_MONGODB_URI
+spring.data.mongodb.database=Helpdesk
+```
+
+---
+
+# Unit Testing
+
+The application includes validation and workflow unit testing using JUnit and Mockito.
+
+Current tests include:
+- Valid status updates
+- Valid priority assignment
+- Valid priority updates
+- Invalid status handling
+- Invalid priority handling
+- Non-existent ticket update attempts
+
+Run tests using:
+
+```bash
+./mvnw test
+```
+
+---
+
+# Future Improvements
+- Authentication system
+- Search and filtering
+- Dashboard analytics
+- Email notifications
+- File attachments
+- Role permissions
+- Dark mode
+- Ticket comments and history logs
+
+---
+
+# Authors
+- Luci Crow
+- CS351 Full Stack Project
+- CorvusDesk Development Team

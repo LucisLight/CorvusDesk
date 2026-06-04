@@ -187,6 +187,7 @@ function App() {
 
         <EditOwnerPage
           selectedOwner={selectedOwner}
+          setSelectedOwner={setSelectedOwner}
           setCurrentPage={setCurrentPage}
         />
 

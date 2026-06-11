@@ -20,12 +20,28 @@ public class OwnerService {
         return ownerRepository.save(owner);
     }
 
+    public Owner loginOwner(String userName, String password) {
+
+        Owner owner = ownerRepository.findByUserName(userName)
+            .orElseThrow(() ->
+                new RuntimeException("Owner not found"));
+
+        if (owner.getPassword() == null ||
+            !owner.getPassword().equals(password)) {
+
+            throw new RuntimeException("Invalid password");
+        }
+
+        return owner;
+    }
+
     public Owner updateOwner(String ownerId, Owner updatedOwner) {
         return ownerRepository.findById(ownerId)
             .map(owner -> {
                 owner.setName(updatedOwner.getName());
                 owner.setEmail(updatedOwner.getEmail());
                 owner.setPhone(updatedOwner.getPhone());
+
                 return ownerRepository.save(owner);
             })
             .orElseThrow(() -> new RuntimeException("Owner not found"));

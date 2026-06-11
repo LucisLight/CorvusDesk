@@ -7,7 +7,9 @@ function AddOwnerPage({
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: ""
+    phone: "",
+    userName: "",
+    password: ""
   });
 
   const handleChange = (event) => {
@@ -83,6 +85,32 @@ function AddOwnerPage({
           type="text"
           name="phone"
           value={formData.phone}
+          onChange={handleChange}
+          style={{
+            width: "100%",
+            padding: "10px"
+          }}
+        />
+
+        <p>Username</p>
+
+        <input
+          type="text"
+          name="userName"
+          value={formData.userName}
+          onChange={handleChange}
+          style={{
+            width: "100%",
+            padding: "10px"
+          }}
+        />
+
+        <p>Password</p>
+
+        <input
+          type="password"
+          name="password"
+          value={formData.password}
           onChange={handleChange}
           style={{
             width: "100%",

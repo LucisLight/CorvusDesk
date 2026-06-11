@@ -33,6 +33,15 @@ public class OwnerController {
         return ownerService.createOwner(owner);
     }
 
+    @PostMapping("/login")
+    public Owner loginOwner(@RequestBody LoginRequest loginRequest) {
+
+        return ownerService.loginOwner(
+            loginRequest.getUserName(),
+            loginRequest.getPassword()
+        );
+    }
+
     @GetMapping
     public List<Owner> getAllOwners() {
         return ownerService.getAllOwners();
@@ -48,4 +57,25 @@ public class OwnerController {
         return ownerService.updateOwner(ownerId, updatedOwner);
     }
 
+    static class LoginRequest {
+
+        private String userName;
+        private String password;
+
+        public String getUserName() {
+            return userName;
+        }
+
+        public void setUserName(String userName) {
+            this.userName = userName;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+    }
 }

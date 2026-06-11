@@ -16,6 +16,9 @@ function App() {
 
   const [selectedOwner, setSelectedOwner] = useState(null);
 
+  const [currentOwner, setCurrentOwner] =
+    useState(null);
+
   const [currentPage, setCurrentPage] =
     useState("tickets");
 
@@ -39,11 +42,23 @@ function App() {
     setTickets(data);
   };
 
+  const handleLogout = () => {
+
+    setCurrentOwner(null);
+
+    setIsLoggedIn(false);
+
+    setSelectedTicket(null);
+
+    setCurrentPage("tickets");
+  };
+
   if (!isLoggedIn) {
 
     return (
       <LoginPage
         setIsLoggedIn={setIsLoggedIn}
+        setCurrentOwner={setCurrentOwner}
       />
     );
   }
@@ -87,6 +102,22 @@ function App() {
               height: "60px"
             }}
           />
+
+          {currentOwner && (
+
+            <div
+              style={{
+                fontSize: "14px",
+                color: "#555"
+              }}
+            >
+              Logged in as{" "}
+              <strong>
+                {currentOwner.name}
+              </strong>
+            </div>
+
+          )}
 
         </div>
 
@@ -163,6 +194,19 @@ function App() {
             Owners
           </button>
 
+          <button
+            onClick={handleLogout}
+            style={{
+              padding: "10px 18px",
+              backgroundColor: "white",
+              border: "1px solid #999",
+              cursor: "pointer",
+              borderRadius: "10px"
+            }}
+          >
+            Logout
+          </button>
+
         </div>
 
       </div>
@@ -174,6 +218,7 @@ function App() {
           setSelectedTicket={setSelectedTicket}
           fetchTickets={fetchTickets}
           setCurrentPage={setCurrentPage}
+          currentOwner={currentOwner}
         />
 
       ) : currentPage === "owners" ? (
@@ -210,6 +255,7 @@ function App() {
           tickets={tickets}
           setSelectedTicket={setSelectedTicket}
           fetchTickets={fetchTickets}
+          currentOwner={currentOwner}
         />
 
       )}

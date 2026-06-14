@@ -17,26 +17,32 @@ function TicketDetailPage({
   currentOwner
 }) {
 
+  // success message for when the ticket saves correctly
   const [successMessage, setSuccessMessage] =
     useState("");
 
+  // stores all owners so the assigned owner dropdown can use them
   const [owners, setOwners] =
     useState([]);
 
+  // used to force the comments/history panel to refresh after saving changes
   const [updatesRefreshKey, setUpdatesRefreshKey] =
     useState(0);
 
+  // editable copy of the selected ticket so changes do not instantly overwrite the original
   const [editedTicket, setEditedTicket] =
     useState({
       ...selectedTicket
     });
 
+  // when the page loads, grab the owners for the owner dropdown
   useEffect(() => {
 
     fetchOwners();
 
   }, []);
 
+  // pulls owner records from the backend
   const fetchOwners = async () => {
 
     const response = await fetch(
@@ -48,6 +54,7 @@ function TicketDetailPage({
     setOwners(data);
   };
 
+  // sends the user back to the all tickets page
   const handleBack = () => {
 
     setSelectedTicket(null);
@@ -55,6 +62,7 @@ function TicketDetailPage({
     setCurrentPage("tickets");
   };
 
+  // deletes the current ticket, but warns first if it is still active
   const deleteTicket = async () => {
 
     if (
@@ -84,6 +92,7 @@ function TicketDetailPage({
     setSelectedTicket(null);
   };
 
+  // saves edited ticket data and records history if status, priority, or owner changed
   const saveChanges = async () => {
 
     setSuccessMessage("");
@@ -98,6 +107,7 @@ function TicketDetailPage({
 
     setSelectedTicket(editedTicket);
 
+    // bumps the refresh key so TicketUpdatesPanel reloads the newest history logs
     setUpdatesRefreshKey(
       updatesRefreshKey + 1
     );
@@ -116,6 +126,8 @@ function TicketDetailPage({
         minHeight: "100vh"
       }}
     >
+
+      {/* action buttons were pulled into their own component */}
 
       <TicketDetailActions
         onBack={handleBack}
@@ -141,20 +153,28 @@ function TicketDetailPage({
         }}
       >
 
+        {/* ticket status, priority, dates, and description live here now */}
+
         <TicketInformationCard
           editedTicket={editedTicket}
           setEditedTicket={setEditedTicket}
         />
 
+        {/* requester name, email, and phone were moved into this card */}
+
         <RequesterInformationCard
           editedTicket={editedTicket}
         />
+
+        {/* owner assignment dropdown and owner contact info live here */}
 
         <OwnerInformationCard
           editedTicket={editedTicket}
           setEditedTicket={setEditedTicket}
           owners={owners}
         />
+
+        {/* comments and history stay separated from the main ticket display */}
 
         <TicketUpdatesPanel
           ticketId={selectedTicket.ticketId}

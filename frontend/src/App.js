@@ -36,6 +36,26 @@ function App() {
 
   }, []);
 
+  useEffect(() => {
+
+    const sendHeartbeat = () => {
+
+      fetch("http://localhost:8080/app/heartbeat", {
+        method: "POST"
+      }).catch(() => {});
+    };
+
+    sendHeartbeat();
+
+    const heartbeatTimer =
+      setInterval(sendHeartbeat, 10000);
+
+    return () => {
+      clearInterval(heartbeatTimer);
+    };
+
+  }, []);
+
   const fetchTickets = async () => {
 
     const response = await fetch(

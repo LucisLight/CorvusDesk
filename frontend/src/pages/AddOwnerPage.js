@@ -9,7 +9,8 @@ function AddOwnerPage({
     email: "",
     phone: "",
     userName: "",
-    password: ""
+    password: "",
+    clearanceLevel: "General"
   });
 
   const handleChange = (event) => {
@@ -24,30 +25,37 @@ function AddOwnerPage({
 
     event.preventDefault();
 
-    await fetch("http://localhost:8080/owners/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(formData)
-    });
+    await fetch(
+      "http://localhost:8080/owners/create",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      }
+    );
 
     setCurrentPage("create");
   };
 
   return (
 
-    <div style={{
-      padding: "30px",
-      backgroundColor: "white",
-      borderRadius: "12px",
-      border: "1px solid lightpink",
-      width: "700px"
-    }}>
+    <div
+      style={{
+        padding: "30px",
+        backgroundColor: "white",
+        borderRadius: "12px",
+        border: "1px solid lightpink",
+        width: "700px"
+      }}
+    >
 
-      <h1 style={{
-        color: "#d94f8a"
-      }}>
+      <h1
+        style={{
+          color: "#d94f8a"
+        }}
+      >
         Add New Owner
       </h1>
 
@@ -117,6 +125,38 @@ function AddOwnerPage({
             padding: "10px"
           }}
         />
+
+        <p>Clearance Level</p>
+
+        <select
+          name="clearanceLevel"
+          value={formData.clearanceLevel}
+          onChange={handleChange}
+          style={{
+            width: "100%",
+            padding: "10px"
+          }}
+        >
+          <option value="Admin">
+            Admin
+          </option>
+
+          <option value="Manager">
+            Manager
+          </option>
+
+          <option value="Network">
+            Network
+          </option>
+
+          <option value="Phone">
+            Phone
+          </option>
+
+          <option value="General">
+            General
+          </option>
+        </select>
 
         <br /><br />
 

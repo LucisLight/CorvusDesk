@@ -57,7 +57,7 @@ public class OwnerController {
         return ownerService.updateOwner(ownerId, updatedOwner);
     }
 
-    static class LoginRequest {
+    public static class LoginRequest {
 
         private String userName;
         private String password;

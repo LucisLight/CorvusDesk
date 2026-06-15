@@ -4,7 +4,8 @@ function TicketFilters({
   priorityFilter,
   setPriorityFilter,
   searchText,
-  setSearchText
+  setSearchText,
+  showStatusFilter = true
 }) {
 
   return (
@@ -18,36 +19,40 @@ function TicketFilters({
       }}
     >
 
-      <select
-        value={statusFilter}
-        onChange={(event) =>
-          setStatusFilter(event.target.value)
-        }
-        style={{
-          padding: "8px"
-        }}
-      >
-        <option value="">
-          All Statuses
-        </option>
+      {showStatusFilter && (
 
-        <option value="Open">
-          Open
-        </option>
+        <select
+          value={statusFilter}
+          onChange={(event) =>
+            setStatusFilter(event.target.value)
+          }
+          style={{
+            padding: "8px"
+          }}
+        >
+          <option value="">
+            All Statuses
+          </option>
 
-        <option value="In Progress">
-          In Progress
-        </option>
+          <option value="Open">
+            Open
+          </option>
 
-        <option value="Resolved">
-          Resolved
-        </option>
+          <option value="In Progress">
+            In Progress
+          </option>
 
-        <option value="Closed">
-          Closed
-        </option>
+          <option value="Resolved">
+            Resolved
+          </option>
 
-      </select>
+          <option value="Closed">
+            Closed
+          </option>
+
+        </select>
+
+      )}
 
       <select
         value={priorityFilter}
@@ -82,14 +87,14 @@ function TicketFilters({
 
       <input
         type="text"
-        placeholder="Search title, description, or requester"
+        placeholder="Search title, description, requester, owner, category, or ID"
         value={searchText}
         onChange={(event) =>
           setSearchText(event.target.value)
         }
         style={{
           padding: "8px",
-          width: "300px"
+          width: "360px"
         }}
       />
 

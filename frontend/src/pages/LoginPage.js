@@ -1,5 +1,9 @@
 import { useState } from "react";
 
+import CreateOwnerForm from "../components/CreateOwnerForm";
+import LoginForm from "../components/LoginForm";
+import LoginMessage from "../components/LoginMessage";
+
 function LoginPage({
   setIsLoggedIn,
   setCurrentOwner
@@ -8,24 +12,34 @@ function LoginPage({
   const [isCreatingOwner, setIsCreatingOwner] =
     useState(false);
 
-  const [loginData, setLoginData] = useState({
-    userName: "",
-    password: ""
-  });
+  const [loginData, setLoginData] =
+    useState({
+      userName: "",
+      password: ""
+    });
 
-  const [createData, setCreateData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    userName: "",
-    password: ""
-  });
+  const [createData, setCreateData] =
+    useState({
+      name: "",
+      email: "",
+      phone: "",
+      userName: "",
+      password: "",
+      clearanceLevel: "Admin"
+    });
 
   const [errorMessage, setErrorMessage] =
     useState("");
 
   const [successMessage, setSuccessMessage] =
     useState("");
+
+  const clearMessages = () => {
+
+    setErrorMessage("");
+
+    setSuccessMessage("");
+  };
 
   const handleLoginChange = (event) => {
 
@@ -47,8 +61,7 @@ function LoginPage({
 
     event.preventDefault();
 
-    setErrorMessage("");
-    setSuccessMessage("");
+    clearMessages();
 
     try {
 
@@ -86,8 +99,7 @@ function LoginPage({
 
     event.preventDefault();
 
-    setErrorMessage("");
-    setSuccessMessage("");
+    clearMessages();
 
     try {
 
@@ -125,24 +137,37 @@ function LoginPage({
     }
   };
 
+  const toggleCreateOwner = () => {
+
+    setIsCreatingOwner(!isCreatingOwner);
+
+    clearMessages();
+  };
+
   return (
 
-    <div style={{
-      minHeight: "100vh",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      background: "linear-gradient(to bottom, #fff5fa, #ffe3ef)"
-    }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background:
+          "linear-gradient(to bottom, #fff5fa, #ffe3ef)"
+      }}
+    >
 
-      <div style={{
-        backgroundColor: "white",
-        padding: "60px",
-        borderRadius: "24px",
-        boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-        textAlign: "center",
-        width: "500px"
-      }}>
+      <div
+        style={{
+          backgroundColor: "white",
+          padding: "60px",
+          borderRadius: "24px",
+          boxShadow:
+            "0 8px 24px rgba(0,0,0,0.08)",
+          textAlign: "center",
+          width: "500px"
+        }}
+      >
 
         <img
           src="/corvus-logo.png"
@@ -153,204 +178,47 @@ function LoginPage({
           }}
         />
 
-        <h2 style={{
-          color: "#d94f8a",
-          marginBottom: "20px"
-        }}>
+        <h2
+          style={{
+            color: "#d94f8a",
+            marginBottom: "20px"
+          }}
+        >
           {isCreatingOwner
             ? "Create Owner Login"
             : "Owner Login"}
         </h2>
 
-        {errorMessage && (
+        <LoginMessage
+          message={errorMessage}
+          type="error"
+        />
 
-          <div style={{
-            backgroundColor: "#ffe0e0",
-            border: "1px solid #cc4444",
-            color: "#8a1f1f",
-            padding: "10px",
-            borderRadius: "10px",
-            marginBottom: "20px",
-            fontWeight: "bold"
-          }}>
-            {errorMessage}
-          </div>
-
-        )}
-
-        {successMessage && (
-
-          <div style={{
-            backgroundColor: "#d9ffd9",
-            border: "1px solid green",
-            color: "#206020",
-            padding: "10px",
-            borderRadius: "10px",
-            marginBottom: "20px",
-            fontWeight: "bold"
-          }}>
-            {successMessage}
-          </div>
-
-        )}
+        <LoginMessage
+          message={successMessage}
+          type="success"
+        />
 
         {!isCreatingOwner ? (
 
-          <form onSubmit={handleLoginSubmit}>
-
-            <input
-              type="text"
-              name="userName"
-              placeholder="Username"
-              value={loginData.userName}
-              onChange={handleLoginChange}
-              style={{
-                width: "100%",
-                padding: "12px",
-                marginBottom: "14px",
-                borderRadius: "10px",
-                border: "1px solid lightpink"
-              }}
-            />
-
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={loginData.password}
-              onChange={handleLoginChange}
-              style={{
-                width: "100%",
-                padding: "12px",
-                marginBottom: "20px",
-                borderRadius: "10px",
-                border: "1px solid lightpink"
-              }}
-            />
-
-            <button
-              type="submit"
-              style={{
-                backgroundColor: "#d94f8a",
-                color: "white",
-                border: "none",
-                padding: "16px 40px",
-                fontSize: "18px",
-                borderRadius: "12px",
-                cursor: "pointer",
-                width: "100%"
-              }}
-            >
-              Login
-            </button>
-
-          </form>
+          <LoginForm
+            loginData={loginData}
+            handleLoginChange={handleLoginChange}
+            handleLoginSubmit={handleLoginSubmit}
+          />
 
         ) : (
 
-          <form onSubmit={handleCreateSubmit}>
-
-            <input
-              type="text"
-              name="name"
-              placeholder="Name"
-              value={createData.name}
-              onChange={handleCreateChange}
-              style={{
-                width: "100%",
-                padding: "12px",
-                marginBottom: "12px",
-                borderRadius: "10px",
-                border: "1px solid lightpink"
-              }}
-            />
-
-            <input
-              type="text"
-              name="email"
-              placeholder="Email"
-              value={createData.email}
-              onChange={handleCreateChange}
-              style={{
-                width: "100%",
-                padding: "12px",
-                marginBottom: "12px",
-                borderRadius: "10px",
-                border: "1px solid lightpink"
-              }}
-            />
-
-            <input
-              type="text"
-              name="phone"
-              placeholder="Phone"
-              value={createData.phone}
-              onChange={handleCreateChange}
-              style={{
-                width: "100%",
-                padding: "12px",
-                marginBottom: "12px",
-                borderRadius: "10px",
-                border: "1px solid lightpink"
-              }}
-            />
-
-            <input
-              type="text"
-              name="userName"
-              placeholder="Username"
-              value={createData.userName}
-              onChange={handleCreateChange}
-              style={{
-                width: "100%",
-                padding: "12px",
-                marginBottom: "12px",
-                borderRadius: "10px",
-                border: "1px solid lightpink"
-              }}
-            />
-
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={createData.password}
-              onChange={handleCreateChange}
-              style={{
-                width: "100%",
-                padding: "12px",
-                marginBottom: "20px",
-                borderRadius: "10px",
-                border: "1px solid lightpink"
-              }}
-            />
-
-            <button
-              type="submit"
-              style={{
-                backgroundColor: "#d94f8a",
-                color: "white",
-                border: "none",
-                padding: "16px 40px",
-                fontSize: "18px",
-                borderRadius: "12px",
-                cursor: "pointer",
-                width: "100%"
-              }}
-            >
-              Create Owner and Login
-            </button>
-
-          </form>
+          <CreateOwnerForm
+            createData={createData}
+            handleCreateChange={handleCreateChange}
+            handleCreateSubmit={handleCreateSubmit}
+          />
 
         )}
 
         <button
-          onClick={() => {
-            setIsCreatingOwner(!isCreatingOwner);
-            setErrorMessage("");
-            setSuccessMessage("");
-          }}
+          onClick={toggleCreateOwner}
           style={{
             marginTop: "18px",
             backgroundColor: "white",

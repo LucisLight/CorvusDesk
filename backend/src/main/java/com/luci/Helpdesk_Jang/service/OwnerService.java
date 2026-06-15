@@ -1,6 +1,7 @@
 package com.luci.Helpdesk_Jang.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,19 @@ public class OwnerService {
     }
 
     public Owner createOwner(Owner owner) {
+
+        owner.setOwnerId(
+            UUID.randomUUID().toString()
+        );
+
+        if (
+            owner.getClearanceLevel() == null ||
+            owner.getClearanceLevel().isBlank()
+        ) {
+
+            owner.setClearanceLevel("General");
+        }
+
         return ownerRepository.save(owner);
     }
 
@@ -41,6 +55,9 @@ public class OwnerService {
                 owner.setName(updatedOwner.getName());
                 owner.setEmail(updatedOwner.getEmail());
                 owner.setPhone(updatedOwner.getPhone());
+                owner.setClearanceLevel(updatedOwner.getClearanceLevel());
+                owner.setUserName(updatedOwner.getUserName());
+                owner.setPassword(updatedOwner.getPassword());
 
                 return ownerRepository.save(owner);
             })

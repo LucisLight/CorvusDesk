@@ -1,6 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import TicketListPage from "./TicketListPage";
-
+import TicketListPage from "../pages/TicketListPage";
 const testTickets = [
   {
     ticketId: "1",
@@ -9,6 +8,8 @@ const testTickets = [
     requesterName: "Luci",
     status: "Open",
     priority: "High",
+    ownerName: "Luci",
+    category: "Phone",
     createdAt: new Date(),
     updatedAt: new Date()
   },
@@ -19,6 +20,8 @@ const testTickets = [
     requesterName: "Bob",
     status: "Closed",
     priority: "Low",
+    ownerName: "Alice",
+    category: "Network",
     createdAt: new Date(),
     updatedAt: new Date()
   }
@@ -34,6 +37,10 @@ test(
         tickets={testTickets}
         setSelectedTicket={() => {}}
         fetchTickets={() => {}}
+        currentOwner={{
+          name: "Admin User",
+          clearanceLevel: "Admin"
+        }}
       />
     );
 
@@ -67,6 +74,10 @@ test(
         tickets={testTickets}
         setSelectedTicket={() => {}}
         fetchTickets={() => {}}
+        currentOwner={{
+          name: "Admin User",
+          clearanceLevel: "Admin"
+        }}
       />
     );
 
@@ -100,6 +111,10 @@ test(
         tickets={testTickets}
         setSelectedTicket={() => {}}
         fetchTickets={() => {}}
+        currentOwner={{
+          name: "Admin User",
+          clearanceLevel: "Admin"
+        }}
       />
     );
 
@@ -133,6 +148,10 @@ test(
         tickets={testTickets}
         setSelectedTicket={() => {}}
         fetchTickets={() => {}}
+        currentOwner={{
+          name: "Admin User",
+          clearanceLevel: "Admin"
+        }}
       />
     );
 
@@ -166,6 +185,10 @@ test(
         tickets={testTickets}
         setSelectedTicket={() => {}}
         fetchTickets={() => {}}
+        currentOwner={{
+          name: "Admin User",
+          clearanceLevel: "Admin"
+        }}
       />
     );
 

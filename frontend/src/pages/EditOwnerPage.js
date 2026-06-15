@@ -12,7 +12,10 @@ function EditOwnerPage({
   const [formData, setFormData] = useState({
     name: selectedOwner.name || "",
     email: selectedOwner.email || "",
-    phone: selectedOwner.phone || ""
+    phone: selectedOwner.phone || "",
+    userName: selectedOwner.userName || "",
+    password: selectedOwner.password || "",
+    clearanceLevel: selectedOwner.clearanceLevel || "General"
   });
 
   const handleChange = (event) => {
@@ -49,6 +52,11 @@ function EditOwnerPage({
       setCurrentPage("owners");
 
     }, 2400);
+  };
+
+  const inputStyle = {
+    width: "100%",
+    padding: "10px"
   };
 
   return (
@@ -91,6 +99,15 @@ function EditOwnerPage({
 
       <form onSubmit={handleSubmit}>
 
+        <h2
+          style={{
+            color: "#d94f8a",
+            marginTop: "10px"
+          }}
+        >
+          Owner Contact Information
+        </h2>
+
         <p>Name</p>
 
         <input
@@ -98,10 +115,7 @@ function EditOwnerPage({
           name="name"
           value={formData.name}
           onChange={handleChange}
-          style={{
-            width: "100%",
-            padding: "10px"
-          }}
+          style={inputStyle}
         />
 
         <p>Email</p>
@@ -111,10 +125,7 @@ function EditOwnerPage({
           name="email"
           value={formData.email}
           onChange={handleChange}
-          style={{
-            width: "100%",
-            padding: "10px"
-          }}
+          style={inputStyle}
         />
 
         <p>Phone</p>
@@ -124,11 +135,75 @@ function EditOwnerPage({
           name="phone"
           value={formData.phone}
           onChange={handleChange}
-          style={{
-            width: "100%",
-            padding: "10px"
-          }}
+          style={inputStyle}
         />
+
+        <h2
+          style={{
+            color: "#d94f8a",
+            marginTop: "25px"
+          }}
+        >
+          Login Information
+        </h2>
+
+        <p>Username</p>
+
+        <input
+          type="text"
+          name="userName"
+          value={formData.userName}
+          onChange={handleChange}
+          style={inputStyle}
+        />
+
+        <p>Password</p>
+
+        <input
+          type="text"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          style={inputStyle}
+        />
+
+        <h2
+          style={{
+            color: "#d94f8a",
+            marginTop: "25px"
+          }}
+        >
+          Clearance Information
+        </h2>
+
+        <p>Clearance Level</p>
+
+        <select
+          name="clearanceLevel"
+          value={formData.clearanceLevel}
+          onChange={handleChange}
+          style={inputStyle}
+        >
+          <option value="Admin">
+            Admin
+          </option>
+
+          <option value="Manager">
+            Manager
+          </option>
+
+          <option value="Network">
+            Network
+          </option>
+
+          <option value="Phone">
+            Phone
+          </option>
+
+          <option value="General">
+            General
+          </option>
+        </select>
 
         <br /><br />
 

@@ -1,4 +1,4 @@
-import { updateTicketWithHistory } from "./TicketsAPI";
+import { updateTicketWithHistory } from "../api/TicketsAPI";
 
 beforeEach(() => {
 

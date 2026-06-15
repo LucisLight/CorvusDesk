@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 
-import TicketUpdatesPanel from "./TicketUpdatesPanel";
+import TicketUpdatesPanel from "../pages/TicketUpdatesPanel";
 
 beforeEach(() => {
 

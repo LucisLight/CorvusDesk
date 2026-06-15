@@ -23,4 +23,6 @@ public class Owner {
     private String password;
 
     private String userName;
+
+    private String clearanceLevel;
 }

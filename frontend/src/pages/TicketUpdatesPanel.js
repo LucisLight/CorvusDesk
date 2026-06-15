@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 function TicketUpdatesPanel({
   ticketId,
   currentOwner,
-  refreshKey
+  refreshKey,
+  allowComments = true
 }) {
 
   const [updates, setUpdates] = useState([]);
@@ -16,11 +17,22 @@ function TicketUpdatesPanel({
 
   useEffect(() => {
 
-    fetchUpdates();
+    const fetchUpdates = async () => {
+
+      const response = await fetch(
+        `http://localhost:8080/ticket-updates/ticket/${ticketId}`
+      );
+
+      const data = await response.json();
+
+      setUpdates(data);
+    };
+
+  fetchUpdates();
 
   }, [ticketId, refreshKey]);
 
-  const fetchUpdates = async () => {
+  const fetchUpdatesAgain = async () => {
 
     const response = await fetch(
       `http://localhost:8080/ticket-updates/ticket/${ticketId}`
@@ -65,7 +77,7 @@ function TicketUpdatesPanel({
 
     setCommentText("");
 
-    fetchUpdates();
+    fetchUpdatesAgain();
   };
 
   return (
@@ -88,53 +100,57 @@ function TicketUpdatesPanel({
         Comments and Request History
       </h2>
 
-      <form onSubmit={addComment}>
+{allowComments && (
 
-        <textarea
-          placeholder="Add a comment or note..."
-          value={commentText}
-          onChange={(event) =>
-            setCommentText(event.target.value)
-          }
-          style={{
-            width: "100%",
-            minHeight: "90px",
-            padding: "10px",
-            border: "1px solid lightpink",
-            borderRadius: "10px",
-            resize: "vertical"
-          }}
-        />
+  <form onSubmit={addComment}>
 
-        {errorMessage && (
+    <textarea
+      placeholder="Add a comment or note..."
+      value={commentText}
+      onChange={(event) =>
+        setCommentText(event.target.value)
+      }
+      style={{
+        width: "100%",
+        minHeight: "90px",
+        padding: "10px",
+        border: "1px solid lightpink",
+        borderRadius: "10px",
+        resize: "vertical"
+      }}
+    />
 
-          <p
-            style={{
-              color: "red",
-              fontWeight: "bold"
-            }}
-          >
-            {errorMessage}
-          </p>
+    {errorMessage && (
 
-        )}
+      <p
+        style={{
+          color: "red",
+          fontWeight: "bold"
+        }}
+      >
+        {errorMessage}
+      </p>
 
-        <button
-          type="submit"
-          style={{
-            marginTop: "10px",
-            backgroundColor: "#d94f8a",
-            color: "white",
-            border: "none",
-            padding: "10px 18px",
-            cursor: "pointer",
-            borderRadius: "10px"
-          }}
-        >
-          Add Comment
-        </button>
+    )}
 
-      </form>
+    <button
+      type="submit"
+      style={{
+        marginTop: "10px",
+        backgroundColor: "#d94f8a",
+        color: "white",
+        border: "none",
+        padding: "10px 18px",
+        cursor: "pointer",
+        borderRadius: "10px"
+      }}
+    >
+      Add Comment
+    </button>
+
+  </form>
+
+)}
 
       <hr
         style={{

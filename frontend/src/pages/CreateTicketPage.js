@@ -1,41 +1,56 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
-function CreateTicketPage({ fetchTickets, setCurrentPage }) {
+import CreateRequesterFields from "../components/CreateRequesterFields";
+import CreateTicketFields from "../components/CreateTicketFields";
+import CreateTicketOwnerSelect from "../components/CreateTicketOwnerSelect";
 
-  const [successMessage, setSuccessMessage] = useState("");
+const emptyTicketForm = {
+  title: "",
+  description: "",
+  requesterName: "",
+  requesterEmail: "",
+  requesterPhone: "",
+  category: "",
+  priority: "",
+  ownerId: "",
+  ownerName: "",
+  ownerEmail: "",
+  ownerPhone: ""
+};
 
-  const [errorMessage, setErrorMessage] = useState("");
+function CreateTicketPage({
+  fetchTickets,
+  setCurrentPage
+}) {
 
-  const [owners, setOwners] = useState([]);
+  const [successMessage, setSuccessMessage] =
+    useState("");
 
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    requesterName: "",
-    requesterEmail: "",
-    requesterPhone: "",
-    category: "",
-    priority: "",
-    ownerId: "",
-    ownerName: "",
-    ownerEmail: "",
-    ownerPhone: ""
-  });
+  const [errorMessage, setErrorMessage] =
+    useState("");
+
+  const [owners, setOwners] =
+    useState([]);
+
+  const [formData, setFormData] =
+    useState(emptyTicketForm);
 
   useEffect(() => {
+
+    const fetchOwners = async () => {
+
+      const response = await fetch(
+        "http://localhost:8080/owners"
+      );
+
+      const data = await response.json();
+
+      setOwners(data);
+    };
 
     fetchOwners();
 
   }, []);
-
-  const fetchOwners = async () => {
-
-    const response = await fetch("http://localhost:8080/owners");
-
-    const data = await response.json();
-
-    setOwners(data);
-  };
 
   const handleChange = (event) => {
 
@@ -49,40 +64,37 @@ function CreateTicketPage({ fetchTickets, setCurrentPage }) {
 
     event.preventDefault();
 
-    const response = await fetch("http://localhost:8080/tickets/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(formData)
-    });
+    const response = await fetch(
+      "http://localhost:8080/tickets/create",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      }
+    );
 
     if (!response.ok) {
 
-      setErrorMessage("All required fields must be filled out.");
+      setSuccessMessage("");
+
+      setErrorMessage(
+        "All required fields must be filled out."
+      );
 
       return;
     }
 
     setErrorMessage("");
 
-    setSuccessMessage("Ticket created successfully!");
+    setSuccessMessage(
+      "Ticket created successfully!"
+    );
 
     fetchTickets();
 
-    setFormData({
-      title: "",
-      description: "",
-      requesterName: "",
-      requesterEmail: "",
-      requesterPhone: "",
-      category: "",
-      priority: "",
-      ownerId: "",
-      ownerName: "",
-      ownerEmail: "",
-      ownerPhone: ""
-    });
+    setFormData(emptyTicketForm);
   };
 
   return (
@@ -128,212 +140,33 @@ function CreateTicketPage({ fetchTickets, setCurrentPage }) {
             marginBottom: "20px",
             color: "#206020",
             fontWeight: "bold"
-        }}
+          }}
         >
-        ✓  {successMessage}
+          ✓ {successMessage}
         </div>
 
-  )}
+      )}
 
       <form onSubmit={handleSubmit}>
 
-        <p>Name</p>
-
-        <input
-          type="text"
-          name="requesterName"
-          value={formData.requesterName}
-          onChange={handleChange}
-          style={{
-            width: "100%",
-            padding: "10px"
-          }}
+        <CreateRequesterFields
+          formData={formData}
+          handleChange={handleChange}
         />
 
-        <p>Email</p>
-
-        <input
-          type="text"
-          name="requesterEmail"
-          value={formData.requesterEmail}
-          onChange={handleChange}
-          style={{
-            width: "100%",
-            padding: "10px"
-          }}
+        <CreateTicketFields
+          formData={formData}
+          handleChange={handleChange}
         />
 
-        <p>Phone</p>
-
-        <input
-          type="text"
-          name="requesterPhone"
-          value={formData.requesterPhone}
-          onChange={handleChange}
-          style={{
-            width: "100%",
-            padding: "10px"
-          }}
+        <CreateTicketOwnerSelect
+          owners={owners}
+          formData={formData}
+          setFormData={setFormData}
+          setCurrentPage={setCurrentPage}
         />
 
-        <p>Category</p>
-
-        <select
-          name="category"
-          value={formData.category}
-          onChange={handleChange}
-          style={{
-            width: "100%",
-            padding: "10px"
-          }}
-        >
-
-          <option value="">
-            Select Category
-          </option>
-
-          <option value="Network">
-            Network
-          </option>
-
-          <option value="Personal Computing">
-            Personal Computing
-          </option>
-
-          <option value="Email">
-            Email
-          </option>
-
-          <option value="Phone">
-            Phone
-          </option>
-
-        </select>
-
-        <p>Priority</p>
-
-        <select
-          name="priority"
-          value={formData.priority}
-          onChange={handleChange}
-          style={{
-            width: "100%",
-            padding: "10px"
-          }}
-        >
-
-          <option value="">
-            Select Priority
-          </option>
-
-          <option value="Low">
-            Low
-          </option>
-
-          <option value="Medium">
-            Medium
-          </option>
-
-          <option value="High">
-            High
-          </option>
-
-          <option value="Critical">
-            Critical
-          </option>
-
-        </select>
-
-        <p>Owner</p>
-
-        <select
-          name="ownerId"
-          value={formData.ownerId}
-          onChange={(event) => {
-
-            const selectedOwner = owners.find(
-              (owner) => owner.ownerId === event.target.value
-            );
-
-            if (!selectedOwner) {
-
-              return;
-            }
-
-            setFormData({
-              ...formData,
-              ownerId: selectedOwner.ownerId,
-              ownerName: selectedOwner.name,
-              ownerEmail: selectedOwner.email,
-              ownerPhone: selectedOwner.phone
-            });
-
-          }}
-          style={{
-            width: "100%",
-            padding: "10px",
-            marginBottom: "10px"
-          }}
-        >
-
-          <option value="">
-            Select Owner
-          </option>
-
-          {owners.map((owner) => (
-
-            <option
-              key={owner.ownerId}
-              value={owner.ownerId}
-            >
-              {owner.name}
-            </option>
-
-          ))}
-
-        </select>
-
-        <button
-          type="button"
-          onClick={() => setCurrentPage("addOwner")}
-          style={{
-            marginBottom: "15px",
-            backgroundColor: "#f7d7e6",
-            border: "1px solid #d94f8a",
-            padding: "6px 12px",
-            cursor: "pointer"
-          }}
-        >
-          + New Owner
-        </button>
-
-        <p>Title</p>
-
-        <input
-          type="text"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
-          style={{
-            width: "100%",
-            padding: "10px"
-          }}
-        />
-
-        <p>Description</p>
-
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          style={{
-            width: "100%",
-            height: "120px",
-            padding: "10px"
-          }}
-        />
-
-        <br /><br />
+        <br />
 
         <button
           type="submit"

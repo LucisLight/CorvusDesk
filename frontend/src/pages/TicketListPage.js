@@ -1,7 +1,12 @@
 import { useState } from "react";
 
+import SortableHeader from "../components/SortableHeader";
 import TicketFilters from "../components/TicketFilters";
 import TicketRow from "../components/TicketRow";
+
+import { FilterTicketsByClearance } from "../utils/FilterTicketsByClearance";
+import { FilterTickets } from "../utils/FilterTickets";
+import { SortTickets } from "../utils/SortTickets";
 
 function TicketListPage({
   tickets,
@@ -19,42 +24,51 @@ function TicketListPage({
   const [searchText, setSearchText] =
     useState("");
 
-  const filteredTickets = tickets.filter((ticket) => {
+  const [sortField, setSortField] =
+    useState("");
 
-    const matchesStatus =
-      !statusFilter ||
-      ticket.status === statusFilter;
+  const [sortDirection, setSortDirection] =
+    useState("");
 
-    const matchesPriority =
-      !priorityFilter ||
-      ticket.priority === priorityFilter;
+  const handleSort = (field) => {
 
-    const matchesSearch =
-      !searchText ||
+    if (sortField !== field) {
 
-      ticket.title
-        ?.toLowerCase()
-        .includes(
-          searchText.toLowerCase()
-        ) ||
+      setSortField(field);
 
-      ticket.description
-        ?.toLowerCase()
-        .includes(
-          searchText.toLowerCase()
-        ) ||
+      setSortDirection("default");
 
-      ticket.requesterName
-        ?.toLowerCase()
-        .includes(
-          searchText.toLowerCase()
-        );
+      return;
+    }
 
-    return (
-      matchesStatus &&
-      matchesPriority &&
-      matchesSearch
-    );
+    if (sortDirection === "default") {
+
+      setSortDirection("reverse");
+
+      return;
+    }
+
+    setSortField("");
+
+    setSortDirection("");
+  };
+
+  const clearanceFilteredTickets = FilterTicketsByClearance({
+    tickets: tickets,
+    currentOwner: currentOwner
+  });
+
+  const filteredTickets = FilterTickets({
+    tickets: clearanceFilteredTickets,
+    statusFilter: statusFilter,
+    priorityFilter: priorityFilter,
+    searchText: searchText
+  });
+
+  const sortedTickets = SortTickets({
+    tickets: filteredTickets,
+    sortField: sortField,
+    sortDirection: sortDirection
   });
 
   return (
@@ -107,25 +121,67 @@ function TicketListPage({
           }}
         >
 
-          <div>Created</div>
+          <SortableHeader
+            label="Created"
+            field="createdAt"
+            sortField={sortField}
+            sortDirection={sortDirection}
+            onSort={handleSort}
+          />
 
-          <div>Status</div>
+          <SortableHeader
+            label="Status"
+            field="status"
+            sortField={sortField}
+            sortDirection={sortDirection}
+            onSort={handleSort}
+          />
 
-          <div>Priority</div>
+          <SortableHeader
+            label="Priority"
+            field="priority"
+            sortField={sortField}
+            sortDirection={sortDirection}
+            onSort={handleSort}
+          />
 
-          <div>Title</div>
+          <SortableHeader
+            label="Title / Details"
+            field="titleDetails"
+            sortField={sortField}
+            sortDirection={sortDirection}
+            onSort={handleSort}
+          />
 
-          <div>Requester</div>
+          <SortableHeader
+            label="Requester"
+            field="requesterName"
+            sortField={sortField}
+            sortDirection={sortDirection}
+            onSort={handleSort}
+          />
 
-          <div>Owner</div>
+          <SortableHeader
+            label="Owner"
+            field="ownerName"
+            sortField={sortField}
+            sortDirection={sortDirection}
+            onSort={handleSort}
+          />
 
-          <div>Updated</div>
+          <SortableHeader
+            label="Updated"
+            field="updatedAt"
+            sortField={sortField}
+            sortDirection={sortDirection}
+            onSort={handleSort}
+          />
 
           <div>Action</div>
 
         </div>
 
-        {filteredTickets.length === 0 && (
+        {sortedTickets.length === 0 && (
 
           <div
             style={{
@@ -140,7 +196,7 @@ function TicketListPage({
 
         )}
 
-        {filteredTickets.map((ticket) => (
+        {sortedTickets.map((ticket) => (
 
           <TicketRow
             key={ticket.ticketId}
